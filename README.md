@@ -1,3 +1,7 @@
+**Candidate submission — IRIS-OEK-SN / TASK 058:** see
+[Saxony compensation parcel harvester](assignments/IRIS-OEK-SN/README.md)
+for the isolated implementation, Docker setup, tests and quality report.
+
 # 🏢 NRW Data Center Business Intelligence Platform
 
 ### AI-Powered Geospatial Business Intelligence for Data Center Site Selection and Infrastructure Analysis
@@ -195,7 +199,7 @@ I --> J
 │ Executive Insights   │
 └──────────────────────┘
 ```
-```                  
+```
 
 # Dashboard Modules
 

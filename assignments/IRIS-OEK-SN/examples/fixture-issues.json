@@ -1,0 +1,313 @@
+[
+  {
+    "index": 1,
+    "source_id": "demo-002",
+    "outcome": "accepted_with_flags",
+    "reason": [
+      "missing_municipality",
+      "missing_cadastre",
+      "missing_status",
+      "missing_area",
+      "missing_credits"
+    ]
+  },
+  {
+    "index": 2,
+    "source_id": "demo-003",
+    "outcome": "accepted_with_flags",
+    "reason": [
+      "geometry_repaired: Self-intersection[410500 5650100]",
+      "source_area_differs_over_5_percent"
+    ]
+  },
+  {
+    "index": 3,
+    "source_id": "demo-001",
+    "outcome": "duplicate",
+    "reason": "Identical source identifier and content"
+  },
+  {
+    "index": 4,
+    "outcome": "rejected",
+    "reason": "Missing stable source identifier",
+    "feature": {
+      "type": "Feature",
+      "id": "synthetic.x",
+      "properties": {
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410000,
+              5650000
+            ],
+            [
+              410100,
+              5650000
+            ],
+            [
+              410100,
+              5650100
+            ],
+            [
+              410000,
+              5650100
+            ],
+            [
+              410000,
+              5650000
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "index": 5,
+    "outcome": "rejected",
+    "reason": "Empty or nonpolygon geometry",
+    "feature": {
+      "type": "Feature",
+      "id": "synthetic.point",
+      "properties": {
+        "parcel_id": "point",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          410000,
+          5650000
+        ]
+      }
+    }
+  },
+  {
+    "index": 6,
+    "outcome": "rejected",
+    "reason": "State attribute is missing or not an explicitly allowed Saxony code",
+    "feature": {
+      "type": "Feature",
+      "id": "synthetic.wrong",
+      "properties": {
+        "parcel_id": "wrong",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "NW"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410000,
+              5650000
+            ],
+            [
+              410100,
+              5650000
+            ],
+            [
+              410100,
+              5650100
+            ],
+            [
+              410000,
+              5650100
+            ],
+            [
+              410000,
+              5650000
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "index": 7,
+    "outcome": "rejected",
+    "reason": "Geometry outside coarse Saxony plausibility envelope",
+    "feature": {
+      "type": "Feature",
+      "id": "synthetic.outside",
+      "properties": {
+        "parcel_id": "outside",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              500000,
+              5900000
+            ],
+            [
+              500100,
+              5900000
+            ],
+            [
+              500100,
+              5900100
+            ],
+            [
+              500000,
+              5900100
+            ],
+            [
+              500000,
+              5900000
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "index": 8,
+    "outcome": "rejected",
+    "reason": "Missing or malformed geometry",
+    "feature": {
+      "type": "Feature",
+      "id": "synthetic.null",
+      "properties": {
+        "parcel_id": "null",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": null
+    }
+  },
+  {
+    "index": 9,
+    "outcome": "rejected",
+    "reason": "Repair collapsed geometry or produced mixed dimensions",
+    "feature": {
+      "type": "Feature",
+      "id": "synthetic.collapsed",
+      "properties": {
+        "parcel_id": "collapsed",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410000,
+              5650000
+            ],
+            [
+              410100,
+              5650000
+            ],
+            [
+              410200,
+              5650000
+            ],
+            [
+              410000,
+              5650000
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "index": 10,
+    "source_id": "demo-004",
+    "outcome": "accepted_with_flags",
+    "reason": [
+      "unmapped_status"
+    ]
+  },
+  {
+    "index": 11,
+    "outcome": "rejected",
+    "reason": "Repair collapsed geometry or produced mixed dimensions",
+    "feature": {
+      "type": "Feature",
+      "id": "synthetic.mixed",
+      "properties": {
+        "parcel_id": "mixed",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410000,
+              5650000
+            ],
+            [
+              410100,
+              5650000
+            ],
+            [
+              410100,
+              5650100
+            ],
+            [
+              410050,
+              5650100
+            ],
+            [
+              410050,
+              5650200
+            ],
+            [
+              410050,
+              5650100
+            ],
+            [
+              410000,
+              5650100
+            ],
+            [
+              410000,
+              5650000
+            ]
+          ]
+        ]
+      }
+    }
+  }
+]

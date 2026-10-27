@@ -1,0 +1,10 @@
+HTTP/1.1 404 Not Found
+Date: Tue, 27 Oct 2026 18:24:02 GMT
+Server: Apache
+Strict-Transport-Security: max-age=31536000
+Vary: Origin
+Last-Modified: Tue, 13 Oct 2026 10:16:35 GMT
+ETag: "10976-65db61bfb7f69"
+Accept-Ranges: bytes
+Content-Length: 67958
+Content-Type: text/html; charset=UTF-8

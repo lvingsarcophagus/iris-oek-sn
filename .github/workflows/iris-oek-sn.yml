@@ -1,0 +1,42 @@
+name: IRIS-OEK-SN checks
+on:
+  push:
+    paths: ['assignments/IRIS-OEK-SN/**', '.github/workflows/iris-oek-sn.yml']
+  pull_request:
+    paths: ['assignments/IRIS-OEK-SN/**', '.github/workflows/iris-oek-sn.yml']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: assignments/IRIS-OEK-SN
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install locked dependencies
+        run: |
+          python -m pip install --require-hashes -r requirements.lock
+          python -m pip install --no-deps --no-build-isolation -e .
+      - name: Lint and formatting
+        run: |
+          ruff check .
+          ruff format --check .
+      - name: Create isolated database credentials
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import secrets
+          p = Path('.env')
+          p.write_text('POSTGRES_PASSWORD=' + secrets.token_hex(24) + '\n'
+                       'HARVESTER_PASSWORD=' + secrets.token_hex(24) + '\n')
+          p.chmod(0o600)
+          PY
+      - name: Python and real PostGIS tests
+        run: docker compose --ansi never --progress plain --profile test run --build --rm tests
+      - name: Remove isolated test services
+        if: always()
+        run: docker compose down -v

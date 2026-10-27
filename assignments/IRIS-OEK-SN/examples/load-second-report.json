@@ -1,0 +1,51 @@
+{
+  "run_id": "66354817-ec48-4eff-899e-dfa8ddc7ef73",
+  "started_at": "2026-10-27T18:39:19.718570+00:00",
+  "status": "loaded",
+  "is_fixture": true,
+  "command": "run",
+  "config": {
+    "endpoint": "https://geoportal.sachsen.de/wfs/oekokonto",
+    "layer": "sn_oekokonto_flurstuecke",
+    "page_size": 2,
+    "max_pages": 1000,
+    "timeout_seconds": 30,
+    "request_interval_seconds": 0,
+    "retries": 2,
+    "max_response_bytes": 20000000,
+    "reviewed_schema_sha256": null,
+    "id_field": "parcel_id",
+    "fields": {
+      "municipality": "gemeinde",
+      "cadastre": "gemarkung",
+      "status": "status",
+      "area": "flaeche",
+      "credits": "oekopunkte",
+      "state": "land"
+    },
+    "status_values": {
+      "verfügbar": "available",
+      "zugeordnet": "allocated"
+    },
+    "state_values": [
+      "SN",
+      "14"
+    ],
+    "area_unit": "m2",
+    "credit_unit": "synthetic_ecopoints"
+  },
+  "input_sha256": "80a46d683add089fd6e44e699172bbbaa30fe7e4f751fbb0762360fc9eafaf57",
+  "counts": {
+    "received": 12,
+    "accepted": 4,
+    "repaired": 1,
+    "rejected": 7,
+    "duplicate": 1
+  },
+  "load": {
+    "inserted": 0,
+    "updated": 0,
+    "unchanged": 4
+  },
+  "finished_at": "2026-10-27T18:39:19.764227+00:00"
+}

@@ -1,0 +1,450 @@
+{
+  "fixture": true,
+  "description": "SYNTHETIC protocol/quality examples; no real registered sites or verified source attributes.",
+  "source_namespace": "urn:iris:synthetic:saxony",
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:EPSG::25833"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "synthetic.demo-001",
+      "properties": {
+        "parcel_id": "demo-001",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410000,
+              5650000
+            ],
+            [
+              410100,
+              5650000
+            ],
+            [
+              410100,
+              5650100
+            ],
+            [
+              410000,
+              5650100
+            ],
+            [
+              410000,
+              5650000
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic.demo-002",
+      "properties": {
+        "parcel_id": "demo-002",
+        "land": "14"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410200,
+              5650000
+            ],
+            [
+              410300,
+              5650000
+            ],
+            [
+              410300,
+              5650100
+            ],
+            [
+              410200,
+              5650100
+            ],
+            [
+              410200,
+              5650000
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic.demo-003",
+      "properties": {
+        "parcel_id": "demo-003",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410400,
+              5650000
+            ],
+            [
+              410600,
+              5650200
+            ],
+            [
+              410400,
+              5650200
+            ],
+            [
+              410600,
+              5650000
+            ],
+            [
+              410400,
+              5650000
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic.demo-001",
+      "properties": {
+        "parcel_id": "demo-001",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410000,
+              5650000
+            ],
+            [
+              410100,
+              5650000
+            ],
+            [
+              410100,
+              5650100
+            ],
+            [
+              410000,
+              5650100
+            ],
+            [
+              410000,
+              5650000
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic.x",
+      "properties": {
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410000,
+              5650000
+            ],
+            [
+              410100,
+              5650000
+            ],
+            [
+              410100,
+              5650100
+            ],
+            [
+              410000,
+              5650100
+            ],
+            [
+              410000,
+              5650000
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic.point",
+      "properties": {
+        "parcel_id": "point",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          410000,
+          5650000
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic.wrong",
+      "properties": {
+        "parcel_id": "wrong",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "NW"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410000,
+              5650000
+            ],
+            [
+              410100,
+              5650000
+            ],
+            [
+              410100,
+              5650100
+            ],
+            [
+              410000,
+              5650100
+            ],
+            [
+              410000,
+              5650000
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic.outside",
+      "properties": {
+        "parcel_id": "outside",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              500000,
+              5900000
+            ],
+            [
+              500100,
+              5900000
+            ],
+            [
+              500100,
+              5900100
+            ],
+            [
+              500000,
+              5900100
+            ],
+            [
+              500000,
+              5900000
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic.null",
+      "properties": {
+        "parcel_id": "null",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic.collapsed",
+      "properties": {
+        "parcel_id": "collapsed",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410000,
+              5650000
+            ],
+            [
+              410100,
+              5650000
+            ],
+            [
+              410200,
+              5650000
+            ],
+            [
+              410000,
+              5650000
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic.demo-004",
+      "properties": {
+        "parcel_id": "demo-004",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "nicht_verifiziert",
+        "flaeche": "10000,0",
+        "oekopunkte": "12,5",
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410800,
+              5650000
+            ],
+            [
+              410900,
+              5650000
+            ],
+            [
+              410900,
+              5650100
+            ],
+            [
+              410800,
+              5650100
+            ],
+            [
+              410800,
+              5650000
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic.mixed",
+      "properties": {
+        "parcel_id": "mixed",
+        "gemeinde": "  Dresden\t Stadt  ",
+        "gemarkung": "  Altstadt  I ",
+        "status": "verfügbar",
+        "flaeche": "10000,0",
+        "oekopunkte": 2500,
+        "land": "SN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              410000,
+              5650000
+            ],
+            [
+              410100,
+              5650000
+            ],
+            [
+              410100,
+              5650100
+            ],
+            [
+              410050,
+              5650100
+            ],
+            [
+              410050,
+              5650200
+            ],
+            [
+              410050,
+              5650100
+            ],
+            [
+              410000,
+              5650100
+            ],
+            [
+              410000,
+              5650000
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

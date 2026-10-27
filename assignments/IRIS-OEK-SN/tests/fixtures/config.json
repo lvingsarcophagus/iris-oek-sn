@@ -1,0 +1,16 @@
+{
+  "page_size": 2,
+  "request_interval_seconds": 0,
+  "id_field": "parcel_id",
+  "fields": {
+    "municipality": "gemeinde",
+    "cadastre": "gemarkung",
+    "status": "status",
+    "area": "flaeche",
+    "credits": "oekopunkte",
+    "state": "land"
+  },
+  "status_values": {"verfügbar": "available", "zugeordnet": "allocated"},
+  "area_unit": "m2",
+  "credit_unit": "synthetic_ecopoints"
+}

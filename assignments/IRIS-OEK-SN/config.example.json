@@ -1,0 +1,15 @@
+{
+  "endpoint": "https://geoportal.sachsen.de/wfs/oekokonto",
+  "layer": "sn_oekokonto_flurstuecke",
+  "page_size": 100,
+  "max_pages": 1000,
+  "timeout_seconds": 30,
+  "request_interval_seconds": 1,
+  "retries": 2,
+  "reviewed_schema_sha256": null,
+  "id_field": null,
+  "fields": {},
+  "status_values": {},
+  "area_unit": null,
+  "credit_unit": null
+}

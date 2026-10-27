@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SYNTHETIC: names below are unverified and must not be used as a live mapping. -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:sn="urn:iris:synthetic:saxony"
+ targetNamespace="urn:iris:synthetic:saxony" elementFormDefault="qualified">
+ <xsd:element name="sn_oekokonto_flurstuecke" type="sn:parcelType" substitutionGroup="gml:AbstractFeature"/>
+ <xsd:complexType name="parcelType"><xsd:complexContent><xsd:extension base="gml:AbstractFeatureType"><xsd:sequence>
+  <xsd:element name="parcel_id" type="xsd:string"/>
+  <xsd:element name="gemeinde" type="xsd:string" minOccurs="0"/>
+  <xsd:element name="gemarkung" type="xsd:string" minOccurs="0"/>
+  <xsd:element name="status" type="xsd:string" minOccurs="0"/>
+  <xsd:element name="flaeche" type="xsd:decimal" minOccurs="0"/>
+  <xsd:element name="oekopunkte" type="xsd:decimal" minOccurs="0"/>
+  <xsd:element name="land" type="xsd:string"/>
+  <xsd:element name="geom" type="gml:MultiSurfacePropertyType"/>
+ </xsd:sequence></xsd:extension></xsd:complexContent></xsd:complexType>
+</xsd:schema>
