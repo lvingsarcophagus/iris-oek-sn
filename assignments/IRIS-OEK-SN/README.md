@@ -5,6 +5,9 @@ Target: **`iris_staging.compensation_sites`**, keyed by `(site_id, state_code)`.
 This independent subproject is based on upstream commit
 `76d448eb8953488e55bc4c3ba193629d534a7bb8`; it does not invoke the base application's pipelines.
 
+For an in-depth explanation of the design and code, read
+[PROJECT_WALKTHROUGH.md](PROJECT_WALKTHROUGH.md).
+
 **Live access limitation:** the assignment's [GetCapabilities endpoint](https://geoportal.sachsen.de/wfs/oekokonto?service=WFS&request=GetCapabilities)
 returned HTTP 404 on 2026-10-27. No live layer, namespace, attributes, permissions,
 CRS, pagination support, or registered sites could be verified. The submitted
