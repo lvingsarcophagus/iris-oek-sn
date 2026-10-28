@@ -1,0 +1,27 @@
+{
+  "commit": "da21f6a56ee1f29f559fd00f86114be5f9872433",
+  "primary_commands": "executed directly from README steps 2\u20135",
+  "test_summary": "36 passed in 1.03s",
+  "tracked_env_paths": [
+    ".env.example"
+  ],
+  "credential_scan": "passed",
+  "root_layout": "assignment-only",
+  "fixture_counts": {
+    "received": 12,
+    "accepted": 4,
+    "repaired": 1,
+    "rejected": 7,
+    "duplicate": 1
+  },
+  "first_load": {
+    "inserted": 4,
+    "updated": 0,
+    "unchanged": 0
+  },
+  "replay": {
+    "inserted": 0,
+    "updated": 0,
+    "unchanged": 4
+  }
+}

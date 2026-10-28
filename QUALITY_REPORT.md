@@ -32,8 +32,9 @@ nulls remain null and the raw status is retained with a flag.
 
 ## Automated evidence
 
-The current suite contains **36 tests: 31 non-database and 5 PostGIS integration
-tests**. It covers WFS capabilities/XSD/paging through mocks; count/CRS/duplicate/
+**Verified from a clean public clone: 36 tests passed**, including all **5 real
+PostGIS integration tests**, with no skips. The local fresh-clone run also passed
+all 31 non-database tests. It covers WFS capabilities/XSD/paging through mocks; count/CRS/duplicate/
 truncation checks; controlled retries/timeouts/byte limits; unsafe XML; Unicode,
 units and nulls; geometry repair, holes/multipart, 3D and unclosed-ring rejection;
 stable IDs; CLI exports; real PostGIS upserts/updates/rollback/provenance/permissions.
@@ -41,8 +42,10 @@ stable IDs; CLI exports; real PostGIS upserts/updates/rollback/provenance/permis
 CI performs a fresh public clone into an empty directory and executes README steps
 2–5 directly, including fixture first load/replay and all database tests. It checks
 that only .env.example is tracked, local credentials are absent from tracked files,
-and unrelated application files are absent. Current clean-clone evidence is saved
-following the completed verification run. Historical [first](examples/load-first-report.json),
+and unrelated application files are absent. [Passing CI run](https://github.com/lvingsarcophagus/iris-oek-sn/actions/runs/40782218370)
+verified runtime commit `da21f6a56ee1f29f559fd00f86114be5f9872433`.
+The [clean-clone result](evidence/clean-clone-result-2026-10-29.json) records the
+README commands, counts, tracked env-file scan and credential checks. Current [first](examples/load-first-report.json),
 [replay](examples/load-second-report.json), [SQL output](examples/postgis-validation.txt)
 and [GeoJSON](examples/fixture-sites.geojson) remain available for comparison.
 

@@ -13,6 +13,10 @@ unavailable; that is this submission's reproducible run path. WFS discovery/sche
 pagination are implemented and tested through representative HTTP mocks. No other
 dataset is substituted. Exact live-layer schema/permissions and registered parcel
 or eco-account membership remain unverified.
+**Clean-clone verification passed:** 36 tests, including 5 PostGIS tests; fixture
+first load 4 inserts, replay 0 inserts / 4 unchanged.
+[CI evidence](https://github.com/lvingsarcophagus/iris-oek-sn/actions/runs/40782218370).
+
 [Current endpoint evidence](evidence/original-wfs-recheck-2026-10-29.json) ·
 [Requirement audit](REQUIREMENTS_AUDIT.md) · [Submission note](SUBMISSION_NOTE.md).
 

@@ -29,6 +29,16 @@ unverified. Fixtures are always labelled synthetic and no alternate data is used
 | Reruns do not duplicate sites; quality issues reported | Fixture first load 4 inserts; replay 0 inserts/4 unchanged; PK and transactional tests; rejected/repaired/flagged outcomes reported |
 | Verify permissions/schema; no restrictions bypassed | Live 404 is documented; no source facts or permissions invented and no alternate/restricted services used |
 
+## Clean-clone verification
+
+[CI passed](https://github.com/lvingsarcophagus/iris-oek-sn/actions/runs/40782218370)
+from a fresh unauthenticated public clone of runtime commit
+`da21f6a56ee1f29f559fd00f86114be5f9872433`. It executed README steps 2–5 verbatim,
+verified 4 first inserts and 0 replay inserts / 4 unchanged, passed all 36 tests
+(including 5 PostGIS tests), and found only .env.example tracked.
+[Machine-readable proof](evidence/clean-clone-result-2026-10-29.json). Later
+evidence-only documentation commits do not change the verified runtime or commands.
+
 ## Open exact-source acceptance items
 
 1. Obtain a working/corrected endpoint for sn_oekokonto_flurstuecke and review its
