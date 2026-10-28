@@ -1,120 +1,74 @@
-# Quality and error report
+# Quality/error report — TASK 058 / IRIS-OEK-SN
 
-Assignment: IRIS-OEK-SN / TASK 058. Updated: 2026-10-28.
+Updated 2026-10-28. The submission retains the allowed fixture WFS demonstrator and
+adds the user-approved real Saxony LISt compensation-measure GeoPackage. The latter
+is explicitly labelled as a different source/domain; it does not prove access to
+`sn_oekokonto_flurstuecke` or registered cadastral eco-account membership.
 
-A user-approved real-data alternative now supplements the original fixture WFS
-demonstration. Its complete-source local validation processed 41,452 polygons:
-41,434 accepted (51 repaired), 18 rejected, zero duplicates. Fourteen rejections
-were collapsed/mixed repairs and four failed final projected geometry/area checks.
-PostGIS full-load/replay evidence is recorded separately after CI validation.
-See [alternative provenance/mapping](ALTERNATIVE_SOURCE.md) and
-[the requirement audit](REQUIREMENTS_AUDIT.md).
+## Full real-source result
 
-The results below headed fixture outcomes and the 35-test result describe the
-original submission; they are retained as historical evidence, not the new totals.
+| Outcome | Count |
+|---|---:|
+| Selected polygon records received | 41,452 |
+| Accepted unique records | 41,434 |
+| Repaired among accepted records | 51 |
+| Rejected | 18 |
+| Duplicates | 0 |
+| First-load inserts | 41,434 |
+| Replay inserts / updates / unchanged | 0 / 0 / 41,434 |
 
-## Source availability and acceptance boundary
+`41,452 = 41,434 + 18 + 0`; repaired is an accepted subset. The 13,745 line and
+152,948 point records in separate layers are inventoried but intentionally outside
+the selected polygon input, not counted as polygon rejections.
 
-The supplied public GetCapabilities URL returned **HTTP 404**, with a portal HTML
-page rather than WFS XML. [Captured headers and response hash](evidence/endpoint-check.md)
-document the observation. No sites were harvested from that WFS. The separately approved public GeoPackage
-is labelled as an alternative compensation-measure source. Advertised feature type, source permissions, real attributes and
-registered compensation-site membership remain unverified. The assignment explicitly
-permits a fixture demonstrator when live access is unavailable.
+Fourteen records were rejected because repair collapsed their geometry or yielded
+mixed dimensions. Four failed final projected validity/positive-area/finite checks.
+[Rejected source IDs and exact reasons](examples/real-validation-summary.json)
+identify all 18; full originals remain in the retained run archive/issues output.
+No records were rejected by the coarse Saxony plausibility envelope.
 
-The fixture namespace is `urn:iris:synthetic:saxony`; all exported examples carry
-`is_fixture=true`. Its EPSG:25833 polygons are invented near Dresden. They do not
-represent registered offsets, cadastral ownership, or usable ecological credits.
+The real export has no municipality, cadastre, source area or ecological-credit
+fields. These remain NULL. `Massnahme_Stand=Bestand` is retained as raw source status;
+availability/allocation is not inferred and normalized compensation status stays
+NULL with a flag. Every accepted record is labelled as compensation-measure data.
 
-## Observed fixture outcomes
+## Acceptance evidence
 
-See the generated [report](examples/fixture-report.json), complete
-[issues](examples/fixture-issues.json) and WGS84 [sample export](examples/fixture-sites.geojson).
-
-| Outcome | Count | Interpretation |
-|---|---:|---|
-| Received | 12 | Input features including duplicate and bad records |
-| Accepted, unique | 4 | Valid projected MultiPolygon records |
-| Repaired | 1 | Subset of accepted: self-intersection repaired to polygonal parts |
-| Rejected | 7 | Reasons below; source examples retained in issue log |
-| Identical duplicate | 1 | Same stable identifier and content; no second site |
-
-`12 = 4 + 7 + 1`. Repaired is an annotation of accepted, not a separate partition.
-
-Rejected cases:
-
-| Synthetic case | Reason |
-|---|---|
-| Missing source identifier | No stable key can be constructed |
-| Point | Not a parcel polygon |
-| `land=NW` | Contradicts allowed Saxony state codes |
-| Geometry far north of Saxony | Fails coarse geographic plausibility check |
-| Null geometry | No defensible parcel geometry |
-| Collinear polygon | Repair collapses to lines |
-| Polygon with a retraced spike | Repair yields mixed polygon/line dimensions; fragments are not discarded |
-
-Accepted edge cases include null optional attributes and an unknown status. Nulls
-stay null; unknown status retains the original string and receives a quality flag.
-Area is measured from the projected working geometry. Credit fields are accepted
-only when explicitly mapped with a unit; synthetic credit values make no claim
-about the real provider's ecological accounting system.
-
-## Automated evidence
-
-**Result: 35 passed in 1.77 seconds**, Python 3.11.14, inside the built Docker
-image with a real isolated PostGIS service. This includes all five integration
-tests; none were skipped. Ruff lint and formatting checks also passed.
-
-```bash
-docker compose --profile test run --build --rm tests
-# 35 passed
-```
-
-Tests exercise schema/namespace/layer discovery, WFS 2 paging with server-imposed
-page caps, stable IDs, before/after hits, changed/unknown counts, repeated IDs,
-truncation, missing/wrong CRS, XML exceptions, timeouts, bounded retry, HTTP 403,
-redirect refusal, response byte caps and unsafe XML.
-
-Normalization checks cover NFC/whitespace, nulls, explicit units, ambiguous numeric
-formats, state mismatch, holes, multipart polygons, 3D rejection, repair/collapse,
-retained raw geometry/properties, projected area, stable keys, unknown statuses and
-conflicting duplicates. CLI tests verify reproducible fixture export and logged live
-404 failure without database access or a fabricated export.
-
-PostGIS tests use only the isolated Compose database. They check:
-
-- First load inserts four sites; replay leaves four unchanged with no new sites.
-- Changed source content updates one stable-key row.
-- Stored geometry is valid MultiPolygon in EPSG:25832; area agrees with `ST_Area`.
-- Original CRS, geometry and source attributes survive loading.
-- A constraint violation on the second record rolls back the first insert and run audit.
-- The runtime role has no superuser/database-creation/schema-creation privileges and
-  cannot create a table in `public`.
-
-Commands and full run instructions are in the [README](README.md).
-
-The documented CLI was also run twice against a fresh disposable database, outside
-pytest: [first load](examples/load-first-report.json) inserted 4; [replay](examples/load-second-report.json)
-inserted 0 and left 4 unchanged. The executed [spatial validation output](examples/postgis-validation.txt)
-shows four `SN` rows, zero invalid geometries, only SRID 25832, no duplicate keys,
-four intersections in the sample window, and 50,125.15 m² total projected area.
-The small difference from source-grid areas reflects projection into the required
-UTM zone. Database [version](evidence/postgis-version.txt) and
-[image digest](evidence/postgis-image.txt) are retained. Demo containers and their
-temporary volume were removed after evidence capture.
+- **43 automated tests passed**, including all **7 PostGIS integration tests**, with
+  no skips. Python 3.11.14; lint and format checks passed. Tests include WFS mocks,
+  original fixtures, public-adapter mocks, geometry repair, identity/update/replay,
+  rollback, source-profile constraints, restricted roles and existing-schema migration.
+- [Passing CI run](https://github.com/lvingsarcophagus/iris-oek-sn/actions/runs/40741513921)
+  tested code commit `8d7246a03c984bf685f89f80c815aa1f2fee5cd4` and performed the
+  full real-source first load and exact-archive replay in isolated PostGIS.
+- [First report](examples/real-load-first-report.json),
+  [replay report](examples/real-load-second-report.json), and
+  [SQL output](examples/real-postgis-validation.txt) show 41,434 stored records,
+  all valid in EPSG:25832, no duplicate keys, correct alternative source/domain,
+  retained licence/attribution, and zero invented optional attributes.
+- [Five-record GeoJSON sample](examples/real-sample.geojson),
+  [source manifest/schema](evidence/list-source-manifest.json), and
+  [source/mapping/licence](ALTERNATIVE_SOURCE.md) support review and reproduction.
+  The full source ZIP/GeoPackage and full outputs are ignored rather than committed.
+- Original synthetic demonstration: 12 received, 4 accepted (1 repaired), 7 rejected,
+  1 identical duplicate. Its historical reports remain in examples/fixture-* and
+  examples/load-*-report.json; synthetic data are always marked as fixtures.
 
 ## Remaining limitations
 
-Live-data acceptance is conditional on provider access, schema/rights review and a
-verified mapping; it cannot be concluded from synthetic tests. The approximate
-Saxony envelope rejects gross errors but is not an authoritative state boundary.
-Offset pagination lacks snapshot isolation and cannot prove consistency under every
-same-count concurrent edit. Unsupported protocols/formats/XSD constructs fail closed.
-No missing status, name, credit, area unit or ecological potential is guessed.
+The [original WFS recheck](evidence/original-wfs-recheck-2026-10-28.json) still returned
+HTTP 404. Its actual layer/schema, permissions and eco-account parcel membership
+remain unverified. The public GeoPackage is a reviewed alternative, not that layer.
+Its source licence is retained, and no restricted internal services are accessed.
 
-The staging DDL is an explicit submission contract; any existing target with a
-different schema needs a reviewed migration. The loader performs upserts and retains
-previously seen sites when later absent/rejected. It does not infer deletions or
-availability from absence. Raw archives and rejected source properties can contain
-provider data after future live use and should follow the provider's retention and
-access conditions.
+The location envelope is not authoritative administrative-boundary validation.
+WFS paging cannot detect every same-count concurrent edit. Unsupported WFS/XSD/format
+arrangements stop explicitly. The alternative config pins the entire reviewed ZIP;
+provider updates require review before changing its hash. Upserts retain disappeared
+or rejected previously loaded sites for later stale-data review. PostgreSQL and local
+files cannot share an atomic commit; committed DB run logs are authoritative.
+
+[REQUIREMENTS_AUDIT.md](REQUIREMENTS_AUDIT.md) evaluates every requirement and states
+which exact-source acceptance items remain open. The demonstrator satisfies the
+brief's allowed unavailable-source route; complete live exact-source acceptance
+cannot honestly be claimed.

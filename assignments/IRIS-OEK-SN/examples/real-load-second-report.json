@@ -1,0 +1,137 @@
+{
+  "run_id": "069d0dcd-07c8-43c6-b757-a41b16598329",
+  "started_at": "2026-10-28T18:05:19.394705+00:00",
+  "status": "loaded",
+  "is_fixture": false,
+  "command": "run",
+  "config": {
+    "source_kind": "list_geopackage",
+    "endpoint": "https://www.list.smwa.sachsen.de/inspire/download/DE-SN-SBV_INSPIRE_Downloadservice_Kompensationsflaechen.zip",
+    "layer": "Kompensationsmassnahmen_Flaechen",
+    "page_size": 500,
+    "max_pages": 1000,
+    "timeout_seconds": 60,
+    "request_interval_seconds": 1,
+    "retries": 2,
+    "max_response_bytes": 67108864,
+    "reviewed_schema_sha256": null,
+    "id_field": "ID",
+    "fields": {
+      "status": "Massnahme_Stand"
+    },
+    "status_values": {},
+    "state_values": [
+      "SN",
+      "14"
+    ],
+    "area_unit": null,
+    "credit_unit": null,
+    "reviewed_archive_sha256": "54173820d224ec39d8b3082810ddb4884703e4581e1ab38d64000b512a578693"
+  },
+  "source_domain": "compensation_measures",
+  "source_kind": "list_geopackage",
+  "source": {
+    "endpoint": "https://www.list.smwa.sachsen.de/inspire/download/DE-SN-SBV_INSPIRE_Downloadservice_Kompensationsflaechen.zip",
+    "layer": "Kompensationsmassnahmen_Flaechen",
+    "source_kind": "list_geopackage",
+    "source_domain": "compensation_measures",
+    "source_namespace": "urn:iris:source:list-sn-kiss-koka-nat-public",
+    "namespace_note": "Assigned by IRIS, not an advertised WFS namespace",
+    "catalog": "https://data.gov.de/suche/daten/kompensationsmassnahmen-informationssystem-kompensationsflachenkataster-sachsen87dcd",
+    "license": "https://www.govdata.de/dl-de/by-2-0",
+    "attribution": "Quelle: Kompensationsma\u00dfnahmen-Informationssystem Freistaat Sachsen",
+    "attempts": [],
+    "input_mode": "replay_archive",
+    "archive_sha256": "54173820d224ec39d8b3082810ddb4884703e4581e1ab38d64000b512a578693",
+    "archive_bytes": 50044116,
+    "inventory": [
+      {
+        "layer": "Kompensationsmassnahmen_Linien",
+        "last_change": "2026-10-02T17:21:26.335Z",
+        "srs_id": 25833,
+        "selected": false,
+        "records": 13745
+      },
+      {
+        "layer": "Kompensationsmassnahmen_Flaechen",
+        "last_change": "2026-10-02T17:21:26.554Z",
+        "srs_id": 25833,
+        "selected": true,
+        "records": 41452
+      },
+      {
+        "layer": "Kompensationsmassnahmen_Punkte",
+        "last_change": "2026-10-02T17:21:28.060Z",
+        "srs_id": 25833,
+        "selected": false,
+        "records": 152948
+      }
+    ],
+    "selected_count": 41452,
+    "source_crs": "EPSG:25833",
+    "schema": [
+      {
+        "name": "cid",
+        "type": "INTEGER"
+      },
+      {
+        "name": "geom",
+        "type": "MULTIPOLYGON"
+      },
+      {
+        "name": "ID",
+        "type": "TEXT(38)"
+      },
+      {
+        "name": "Bauprojektbezeichnung",
+        "type": "TEXT"
+      },
+      {
+        "name": "Behoerdenkennzeichen",
+        "type": "TEXT"
+      },
+      {
+        "name": "BKZ",
+        "type": "TEXT"
+      },
+      {
+        "name": "Massnahme_Nr",
+        "type": "TEXT"
+      },
+      {
+        "name": "Massnahme_Stand",
+        "type": "TEXT"
+      },
+      {
+        "name": "Massnahme_Art",
+        "type": "TEXT"
+      },
+      {
+        "name": "Teilmassnahme_Art",
+        "type": "TEXT"
+      },
+      {
+        "name": "Zielbiotoptyp",
+        "type": "TEXT"
+      },
+      {
+        "name": "Zielbiotoptyp_Code",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "input_sha256": "54173820d224ec39d8b3082810ddb4884703e4581e1ab38d64000b512a578693",
+  "counts": {
+    "received": 41452,
+    "accepted": 41434,
+    "repaired": 51,
+    "rejected": 18,
+    "duplicate": 0
+  },
+  "load": {
+    "inserted": 0,
+    "updated": 0,
+    "unchanged": 41434
+  },
+  "finished_at": "2026-10-28T18:06:13.120710+00:00"
+}

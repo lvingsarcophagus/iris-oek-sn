@@ -28,11 +28,19 @@ alternative; that approval does not make it the requested cadastral parcel layer
 | Python 3.11+, pinned dependencies | Python 3.11.14 verified; exact direct pins + transitive uv.lock and hashed requirements.lock. No new dependencies needed for the GeoPackage adapter. |
 | Example config, Dockerfile, Compose; no secrets | Separate original/alternative configs, tested image and isolated PostGIS Compose project. Credentials generated locally; .env/data/archives excluded from Git and image context. |
 | README with provenance/runs/schema/assumptions | README, MAPPING, ALTERNATIVE_SOURCE and PROJECT_WALKTHROUGH provide these; schema and explicit existing-demo migration included. |
-| Representative automated tests | Original WFS/normalization/CLI/PostGIS tests plus GeoPackage download/replay/schema/CRS/archive/HTTP checks, source-domain DB constraints and v1 migration preservation. |
+| Representative automated tests | 43 passed, including 7 isolated PostGIS tests. Original WFS/normalization/CLI/PostGIS tests plus GeoPackage download/replay/schema/CRS/archive/HTTP checks, source-domain DB constraints and v1 migration preservation. |
 | Short quality/error report | QUALITY_REPORT.md, actual first/replay reports, rejection summary, source manifest, projected geometry SQL audit and small GeoJSON sample. |
 | Correct state, layer and compensation-site domain | Alternative is genuinely published for Saxony compensation measures; actual layer/domain are retained. Coarse envelope is not authoritative state-boundary proof. Exact cadastral parcel/registered eco-account membership remains unverified. |
-| Reruns do not duplicate sites; quality issues reported | Fixture proof retained; full real-snapshot first/replay and SQL evidence are required in CI before final acceptance of the alternative path. |
+| Reruns do not duplicate sites; quality issues reported | Verified in CI: first load inserted 41,434; replay inserted 0 and left 41,434 unchanged. All stored geometries valid in EPSG:25832; zero guessed optional attributes. See examples/real-load-*-report.json and examples/real-postgis-validation.txt. |
 | Verify permissions; never bypass restrictions | Public archive/catalogue licence reviewed. Original 404 and access-denied responses stop; no restricted internal WFS access attempted. |
+
+## Verified evidence
+
+[Passing full CI run](https://github.com/lvingsarcophagus/iris-oek-sn/actions/runs/40741513921)
+verified code commit `8d7246a03c984bf685f89f80c815aa1f2fee5cd4` on Python 3.11.
+The exact reviewed public snapshot was downloaded, loaded and replayed in an
+isolated PostGIS database, with 43 automated tests passed and no skipped tests.
+Evidence-only documentation commits do not change the tested runtime code.
 
 ## Open acceptance items
 
