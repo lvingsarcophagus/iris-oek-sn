@@ -1,162 +1,215 @@
-# IRIS-OEK-SN — Saxony compensation parcels
+# IRIS-OEK-SN — Saxony compensation data harvester
 
-TASK 058 / Wave 3. Python 3.11+, WFS → GeoPandas/Shapely → PostGIS.
-Target: **`iris_staging.compensation_sites`**, keyed by `(site_id, state_code)`.
-This independent subproject is based on upstream commit
-`76d448eb8953488e55bc4c3ba193629d534a7bb8`; it does not invoke the base application's pipelines.
+**TASK 058 / Wave 3.** A Python 3.11 pipeline that retrieves geographic records,
+checks attributes and polygon geometry, and performs repeatable, transactional
+upserts into **`iris_staging.compensation_sites`**. It preserves source data and
+CRS, projects working geometry to **EPSG:25832**, and reports rejected/repaired data.
 
-For an in-depth explanation of the design and code, read
-[PROJECT_WALKTHROUGH.md](PROJECT_WALKTHROUGH.md).
+**Verified:** 43 automated tests passed, including 7 PostGIS integration tests.
+The reviewed real-data run processed **41,452 polygons**, accepted **41,434**
+(including **51 repairs**) and rejected **18**. Replaying the same input inserted
+**zero new records**. [Passing CI and full real-data replay](https://github.com/lvingsarcophagus/iris-oek-sn/actions/runs/40741513921).
 
-**Live access limitation:** the assignment's [GetCapabilities endpoint](https://geoportal.sachsen.de/wfs/oekokonto?service=WFS&request=GetCapabilities)
-returned HTTP 404 on 2026-10-27. No live layer, namespace, attributes, permissions,
-CRS, pagination support, or registered sites could be verified. The submitted
-demonstration uses explicitly **synthetic fixtures**, as permitted by the brief.
-The field names in `tests/fixtures/` are test assumptions, not an observed Saxony schema.
-See [evidence](evidence/endpoint-check.md) and [quality report](QUALITY_REPORT.md).
+**Source limitation:** the assignment WFS returned HTTP 404 when rechecked on
+2026-10-28. Its exact `sn_oekokonto_flurstuecke` layer remains unverified. The
+recommended real-data demonstration uses the explicitly approved **LISt KISS /
+KoKa-Nat public GeoPackage**, labelled `compensation_measures` with its actual
+source/layer, licence and attribution. It does not establish cadastral parcel or
+registered eco-account availability. The original WFS implementation and the
+brief's permitted synthetic fixture demonstration remain available separately.
+[Full requirement audit](REQUIREMENTS_AUDIT.md).
 
-**Real-data alternative:** the user-approved LISt KISS/KoKa-Nat public GeoPackage
-now runs through the same normalizer and staging loader. It is labelled
-`compensation_measures`, with its actual endpoint/layer, licence and attribution.
-See [alternative source/mapping](ALTERNATIVE_SOURCE.md) and
-[requirements audit](REQUIREMENTS_AUDIT.md).
+## Reviewer quick start — real data with Docker
+
+Requires **Git**, **Docker with Compose**, and **Python 3** for generating local
+credentials. Docker supplies Python 3.11 and all application dependencies. The
+following commands work in Linux, macOS or WSL terminals. On Linux, prefix Docker
+commands with `sudo` if your account requires it.
+
+### 1. Clone and enter the assignment directory
 
 ```bash
-# After configuring Docker credentials as below:
-mkdir -p output data
-docker compose run --build --rm harvester run --config config.list.example.json --load
+git clone https://github.com/lvingsarcophagus/iris-oek-sn.git
+cd iris-oek-sn/assignments/IRIS-OEK-SN
 ```
 
-Existing demo databases need the [explicit migration](ALTERNATIVE_SOURCE.md#existing-database-migration).
+**Run every subsequent command from this directory.** If using the submission ZIP,
+enter the extracted directory containing this README and skip cloning.
 
-## Run locally (no database needed)
+### 2. Create local credentials and start the isolated database
 
-Run commands from the directory containing this README
-(`assignments/IRIS-OEK-SN/` in the base repository).
-Use Python 3.11+ and uv 0.9.5, or the pip alternative below.
+```bash
+python3 - <<'PY'
+from pathlib import Path
+import os, secrets
+p = Path('.env')
+if not p.exists():
+    p.write_text('POSTGRES_PASSWORD=' + secrets.token_hex(24) + '\n'
+                 'HARVESTER_PASSWORD=' + secrets.token_hex(24) + '\n'
+                 'LOCAL_UID=' + str(os.getuid()) + '\nLOCAL_GID=' + str(os.getgid()) + '\n')
+    p.chmod(0o600)
+    print('Created local demo credentials.')
+else:
+    print('Using existing local demo credentials.')
+PY
+mkdir -p output data
+docker compose up -d --wait db
+```
+
+No external database credentials are needed. Compose creates an isolated PostGIS
+service and publishes no database ports. `.env` is ignored by Git. Existing demo
+databases created with the original submission need the documented
+[staging-only migration](ALTERNATIVE_SOURCE.md#existing-database-migration).
+
+### 3. Build and run the real-data harvester
+
+```bash
+docker compose run --build --rm harvester run \
+  --config config.list.example.json --load
+```
+
+The first run downloads/builds container images and retrieves the approximately
+50 MB public source ZIP. It verifies the reviewed snapshot checksum, reads the
+polygon layer, normalizes/validates it, and loads accepted records into staging.
+Allow a few minutes for the initial build and processing.
+
+On a fresh demo database, expect:
+
+| Result | Expected count |
+|---|---:|
+| Polygon records received | 41,452 |
+| Accepted / inserted | 41,434 |
+| Repaired among accepted | 51 |
+| Rejected with reasons | 18 |
+| Duplicates | 0 |
+
+The command prints the report location. Each run produces:
+
+```text
+output/<run UUID>/
+  report.json       # processing counts, load results and source provenance
+  issues.json       # quality flags and rejection reasons
+  sites.geojson     # accepted geometry in WGS84, viewable in QGIS
+  source/           # original input archive, GeoPackage and source manifest
+```
+
+The provider may update the download. If its hash changes, the harvester stops
+before loading; review the new snapshot before updating the pinned configuration.
+A [saved-archive replay](ALTERNATIVE_SOURCE.md#run-and-replay) avoids another download.
+
+### 4. Verify repeatability and inspect the database
+
+Run the same command again:
+
+```bash
+docker compose run --rm harvester run --config config.list.example.json --load
+```
+
+Expected: **0 inserted, 0 updated, 41,434 unchanged** for the reviewed input.
+Then execute the supplied spatial/quality queries:
+
+```bash
+docker compose exec -T db \
+  psql -U iris_migrator -d iris_oek_demo < sql/validate_real.sql
+```
+
+Expected: 41,434 alternative-source records, zero invalid geometries, SRID 25832,
+zero duplicate keys, and zero inferred optional attributes. Saved
+[first/replay reports and SQL output](QUALITY_REPORT.md#acceptance-evidence)
+are included for comparison.
+
+### 5. Run automated checks
+
+```bash
+docker compose --profile test run --build --rm tests
+```
+
+Expected: **43 passed**. Tests cover WFS discovery/pagination through HTTP mocks,
+normalization, repair, source download/replay, real PostGIS upserts/rollback,
+restricted permissions and migration. **Integration tests reset the demo staging
+tables**, so run the real-data command again afterward if you want those records
+back. Use only this isolated demo database for tests.
+
+Stop the demo while retaining its data:
+
+```bash
+docker compose down
+```
+
+Use `docker compose down -v` only when you want to delete this demo's database volume.
+
+## Small synthetic fixture demonstration
+
+After the same Docker setup, use this command instead of the real-data command:
+
+```bash
+docker compose run --build --rm harvester run \
+  --config tests/fixtures/config.json \
+  --fixture tests/fixtures/parcels.geojson --load
+```
+
+Expected: 12 received, 4 accepted (including 1 repaired), 7 rejected and 1 identical
+duplicate. On a fresh fixture input load, 4 are inserted; replay inserts 0 and leaves
+4 unchanged. These invented Dresden-area examples deliberately include malformed
+records and are always marked `is_fixture=true`, with keys separate from real data.
+
+## Local Python option — no database required
+
+With Python 3.11+ and uv 0.9.5, from the assignment directory:
 
 ```bash
 uv sync --locked --extra test --python 3.11
 uv run --locked iris-oek run --config tests/fixtures/config.json \
   --fixture tests/fixtures/parcels.geojson
 uv run --locked pytest -q -m 'not integration'
-uv run --locked ruff check .
-uv run --locked ruff format --check .
 ```
 
-Without uv:
-
-```bash
-python3.11 -m venv .venv
-. .venv/bin/activate
-pip install --require-hashes -r requirements.lock
-pip install --no-deps -e .
-iris-oek run --config tests/fixtures/config.json --fixture tests/fixtures/parcels.geojson
-pytest -q -m 'not integration'
-```
-
-`requirements.lock` is a hashed export including test dependencies. Pip installs
-the pinned build backend `hatchling==1.27.0` and `editables==0.5` in an isolated build environment.
-`uv.lock` pins the complete runtime/test dependency graph. Docker uses that lock.
-
-Each invocation creates `output/<run UUID>/report.json`. Successful normalization
-also writes `issues.json` and an RFC 7946 WGS84 `sites.geojson`. Fixture inputs are
-copied with a SHA-256; live response bodies, request parameters, HTTP status and
-SHA-256 hashes are archived under `source/`. No credentials belong in configuration
-or reports. Examples are checked into [examples/](examples/).
-
-## Isolated Docker/PostGIS demonstration
-
-The Compose project creates its own database and volume, publishes no ports and
-uses a restricted loader role. PostgreSQL/PostGIS initialization is performed by a
-separate migration role. No external database or production credentials are needed.
-
-```bash
-# Creates ignored local credentials; do not commit .env.
-python3 - <<'PY'
-from pathlib import Path
-import os, secrets
-p = Path('.env')
-p.write_text('POSTGRES_PASSWORD=' + secrets.token_hex(24) + '\n'
-             'HARVESTER_PASSWORD=' + secrets.token_hex(24) + '\n'
-             'LOCAL_UID=' + str(os.getuid()) + '\nLOCAL_GID=' + str(os.getgid()) + '\n')
-p.chmod(0o600)
-PY
-mkdir -p output
-docker compose up -d --wait db
-docker compose build
-docker compose run --rm harvester run --config tests/fixtures/config.json \
-  --fixture tests/fixtures/parcels.geojson --load
-docker compose run --rm harvester run --config tests/fixtures/config.json \
-  --fixture tests/fixtures/parcels.geojson --load
-docker compose exec -T db psql -U iris_migrator -d iris_oek_demo < sql/validate.sql
-```
-
-Expected: first run inserts 4 sites; second inserts 0 and leaves 4 unchanged.
-Reports contain 12 received, 4 accepted, 1 repaired (a subset of accepted),
-7 rejected and 1 duplicate on both runs. `--load` is required for database writes.
-Compose's default command validates fixtures without loading.
-
-Run all tests, including real PostGIS transactions, CRS/geometry assertions,
-idempotence, updates, rollback and privilege checks:
-
-```bash
-docker compose --profile test run --build --rm tests
-```
-
-**Integration tests truncate only this demo database's three staging tables.**
-Do not point test DSNs at a shared database. Outside Compose, tests require
-`TEST_DATABASE_URL` (restricted loader) and `TEST_ADMIN_DATABASE_URL` (isolated
-test database migration role); otherwise integration tests are reported as skipped.
-Stop this project using `docker compose down`; add `-v` only to delete its demo data.
-The loader has no schema-creation or public-table-write permission. `init-db` is an
-optional migration command for a separate isolated database with PostGIS already
-installed; supply a migration DSN through `DATABASE_URL`.
-
-## Source discovery and mapping
+Expected: 36 non-database tests passed. Omitting `--load` validates and exports
+without writing site tables. `uv.lock` pins transitive dependencies;
+`requirements.lock` provides a hashed pip alternative. For original WFS discovery:
 
 ```bash
 uv run --locked iris-oek discover --config config.example.json
 ```
 
-Discovery archives capabilities, XSD and a machine-readable summary. The supplied
-endpoint currently returns 404. Live harvesting requires a reviewed XSD hash,
-verified attribute mappings/units, WFS 2.0 paging/sorting, a unique ID property,
-GeoJSON with an explicit CRS, and numeric before/after hits counts. Missing live
-attributes remain unmapped. HTTP errors, repeated IDs, changed counts, truncation
-and mismatched CRS fail before loading; there is no automatic fixture fallback.
+Discovery archives capabilities/XSD if available, or writes a failure report. It
+never silently switches to fixtures or an alternative dataset.
 
-| Target | Mapping |
+## Mapping, guarantees and acceptance limits
+
+| Target | Policy |
 |---|---|
-| `site_id`, `state_code` | Stable hash of source namespace/layer/ID plus fixture/live scope; `SN` |
-| `municipality`, `cadastre` | Explicit mapped text fields, Unicode NFC and whitespace normalization |
-| status | Reviewed value lookup; unknown values stay NULL with original text retained |
-| `area_m2`, `source_area_m2` | EPSG:25832 geometry area; separately retained source area with verified unit |
-| credits | Explicit source field/unit, otherwise NULL; no estimate from area/status |
-| geometry/provenance | Valid MultiPolygon in EPSG:25832; original CRS/WKT, geometry JSON, properties, source identity and run metadata retained |
+| Identity | Stable source namespace/layer/ID hash plus fixture/live scope; `(site_id,state_code)` key |
+| State/source/domain | `SN`; actual endpoint/layer and distinct source domain retained |
+| Names/status/credits | Explicit mappings only; absent values remain NULL with flags |
+| Area | Computed in m² from EPSG:25832 geometry; source area retained separately only with verified units |
+| Geometry | Valid, positive-area 2D MultiPolygon; original CRS/WKT and geometry retained |
+| Writes | Only `iris_staging`; one transaction for upserts and successful audit logs |
 
-See [MAPPING.md](MAPPING.md) for the full attribute table, synthetic field names,
-repair policy, pagination controls and live enablement procedure.
+The real alternative lacks municipality, cadastre, source-area and ecological-credit
+fields. `Massnahme_Stand=Bestand` is kept as raw source status; allocation or
+availability is not inferred. The source archive, licence and attribution are retained.
 
-## Assumptions and limitations
+Only wholly polygonal repairs are accepted; collapsed/mixed repairs are rejected.
+The coarse Saxony location envelope is not authoritative boundary verification.
+Missing/disappeared sites are retained for later stale-data review. A changed
+schema/snapshot requires review, and WFS offset paging cannot detect every concurrent
+same-count edit. Exact original-layer permissions/schema and cadastral/eco-account
+membership remain open acceptance items. No restricted services are bypassed.
 
-Fixtures demonstrate behavior; they cannot prove registered-site membership or
-provider permissions. The coarse Saxony envelope catches gross location errors
-but is not an authoritative state boundary. Only wholly polygonal `make_valid`
-results are accepted; collapsed/mixed repairs are rejected. Null optional values
-stay null, and all repairs/rejections/unknown statuses are reported.
+## Review guide
 
-The supplied staging DDL is a new explicit contract. Existing incompatible tables
-need a reviewed migration. Upserts and successful audit logs share one transaction;
-SQL failures roll back the complete load and are reported locally. Identical replay
-updates only last-seen metadata. Disappeared/rejected sites are retained for review;
-there are no inferred deletions. SQL targets only `iris_staging`.
+| Document / file | What to inspect |
+|---|---|
+| [REQUIREMENTS_AUDIT.md](REQUIREMENTS_AUDIT.md) | Requirement-by-requirement assessment and remaining gaps |
+| [QUALITY_REPORT.md](QUALITY_REPORT.md) | Full real-data results, rejected IDs, test evidence and limitations |
+| [ALTERNATIVE_SOURCE.md](ALTERNATIVE_SOURCE.md) | Actual public source, licence, mapping, replay and existing-DB migration |
+| [MAPPING.md](MAPPING.md) | Original WFS/fixture mapping and supported protocol contract |
+| [PROJECT_WALKTHROUGH.md](PROJECT_WALKTHROUGH.md) | In-depth design and code explanation |
+| [iris_oek/](iris_oek/) | WFS/GeoPackage input, normalization, CLI and staging loader |
+| [tests/](tests/) | Representative fixtures, HTTP mocks and database checks |
+| [examples/](examples/) | Saved reports, SQL validation and sample exports |
 
-The client deliberately supports WFS 2.0 with JSON and a simple named XSD feature
-type; unsupported versions/formats/schemas fail closed. Offset paging cannot detect
-every same-count concurrent edit, so a quiescent source/snapshot is needed for strict
-consistency. Rights and actual source schema of the original WFS remain unverified;
-the alternative's reviewed public-download licence and schema are documented separately.
-[QUALITY_REPORT.md](QUALITY_REPORT.md) records the observed outcomes and acceptance
-limits. The provider named in the brief is LfULG Sachsen; synthetic exports are not
-provider data.
+Based on upstream commit `76d448eb8953488e55bc4c3ba193629d534a7bb8`.
+The assignment implementation is isolated under `assignments/IRIS-OEK-SN/`;
+upstream application runners and production/core resources are not invoked.
