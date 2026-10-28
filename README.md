@@ -1,490 +1,169 @@
-**Candidate submission — IRIS-OEK-SN / TASK 058:** see
-[Saxony compensation parcel harvester](assignments/IRIS-OEK-SN/README.md)
-for the isolated implementation, Docker setup, tests and quality report.
+# IRIS-OEK-SN — Saxony compensation parcels
 
-# 🏢 NRW Data Center Business Intelligence Platform
+TASK 058 / Wave 3. Python 3.11+, WFS → GeoPandas/Shapely → PostGIS.
+Target: **`iris_staging.compensation_sites`**, keyed by `(site_id, state_code)`.
+This independent subproject is based on upstream commit
+`76d448eb8953488e55bc4c3ba193629d534a7bb8`; it does not invoke the base application's pipelines.
 
-### AI-Powered Geospatial Business Intelligence for Data Center Site Selection and Infrastructure Analysis
-
-The NRW Data Center Business Intelligence Platform is an AI-powered decision support system that combines geospatial analysis, infrastructure intelligence, renewable energy data, market intelligence, and conversational AI into a single interactive dashboard.
-
-Built with **Python**, **PostgreSQL/PostGIS**, **GeoPandas**, **PyDeck**, **Streamlit**, and **OpenAI**, the platform enables users to evaluate data center locations through interactive GIS visualization, site scoring, and AI-assisted insights.
-
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Dashboard Preview](#dashboard-preview)
-- [Key Features](#key-features)
-- [System Architecture](#system-architecture)
-- [How It Works](#how-it-works)
-- [Dashboard Modules](#dashboard-modules)
-- [AI Advisor](#ai-advisor)
-- [Technology Stack](#technology-stack)
-- [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Running the Dashboard](#running-the-dashboard)
-- [Project Status](#current-project-status)
-- [Roadmap](#roadmap)
-- [Vision](#vision)
-
-![Python]
-![PostgreSQL]
-![PostGIS]
-![Streamlit]
-![OpenAI]
-![Status]
-
-## Overview
-
-Selecting an optimal location for a modern data center requires much more than available land.
-
-Power infrastructure, renewable energy, electrical grid capacity, market activity, and surrounding infrastructure all influence the long-term viability of a site.
-
-The NRW Data Center Business Intelligence Platform integrates multiple public infrastructure datasets into a unified PostgreSQL/PostGIS database and provides an interactive AI-powered dashboard for analyzing, comparing, and evaluating potential data center locations.
-
-The platform combines:
-
-- Geospatial Intelligence
-- Infrastructure Analysis
-- Site Scoring
-- Market Intelligence
-- AI-assisted Decision Support
-
-# Key Features
-
-## GIS Intelligence
-
-✔ Interactive GIS Infrastructure Map
-
-✔ Data Center Visualization
-
-✔ High Voltage Substations
-
-✔ Transformers
-
-✔ Transmission Lines
-
-✔ Renewable Energy Assets
-
----
-
-## Business Intelligence
-
-✔ KPI Dashboard
-
-✔ Site Intelligence
-
-✔ Site Score
-
-✔ Market Intelligence
-
-✔ News Intelligence
-
-✔ Spatial Infrastructure Analysis
-
----
-
-## Artificial Intelligence
-
-✔ AI Advisor
-
-✔ Natural Language Queries
-
-✔ Executive Infrastructure Summaries
-
-✔ Context-aware Responses
-
-✔ Retrieval-Augmented Generation (RAG)
-
----
-
-## Spatial Intelligence
-
-✔ Power Readiness Analysis
-
-✔ Renewable Energy Analysis
-
-✔ Infrastructure Distance Calculations
-
-✔ Land Value Integration
-
-✔ Site Ranking
-
-# System Architecture
-
-```mermaid
-flowchart TD
-
-A[External Data Sources]
-
-B[ETL Pipelines]
-
-C[PostgreSQL + PostGIS]
-
-D[Repository Layer]
-
-E[Business Services]
-
-F[Interactive Dashboard]
-
-G[Site Intelligence]
-
-H[News Intelligence]
-
-I[AI Advisor]
-
-J[Executive Decision Support]
-
-A --> B
-B --> C
-C --> D
-D --> E
-
-E --> F
-E --> G
-E --> H
-
-F --> I
-G --> I
-H --> I
-
-I --> J
-```
-```
-
-┌──────────────────────┐
-│ External Data Sources│
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│    ETL Pipelines     │
-└──────────┬───────────┘
-           ▼
-┌──────────────────────┐
-│ PostgreSQL + PostGIS │
-└──────────┬───────────┘
-           ▼
-┌──────────────────────┐
-│ Repository Layer     │
-└──────────┬───────────┘
-           ▼
-┌──────────────────────┐
-│ Business Services    │
-└──────────┬───────────┘
-           ▼
-      ┌────┴────┐
-      ▼         ▼
-┌──────────┐ ┌──────────┐
-│ GIS Map  │ │ News BI  │
-└────┬─────┘ └────┬─────┘
-     │            │
-     └────┬───────┘
-          ▼
-┌──────────────────────┐
-│ Site Intelligence    │
-└──────────┬───────────┘
-           ▼
-┌──────────────────────┐
-│ AI Advisor           │
-└──────────┬───────────┘
-           ▼
-┌──────────────────────┐
-│ OpenAI GPT           │
-└──────────┬───────────┘
-           ▼
-┌──────────────────────┐
-│ Executive Insights   │
-└──────────────────────┘
-```
-```
-
-# Dashboard Modules
-
-## Interactive GIS Map
-
-Visualizes:
-
-- Data Centers
-- High Voltage Substations
-- Transformers
-- Renewable Energy Assets
-- High Voltage Transmission Lines
-
----
-
-## KPI Dashboard
-
-Provides executive metrics for infrastructure assets, facilities, and renewable energy resources.
-
----
-
-## Site Intelligence
-
-Displays infrastructure proximity, renewable energy availability, land valuation, and technical site characteristics for the selected facility.
-
----
-
-## Site Score
-
-Calculates a unified infrastructure readiness score using spatial analysis and business intelligence metrics.
-
----
-
-## News Intelligence
-
-Aggregates recent industry news and links relevant articles to companies and facilities.
-
----
-
-## AI Advisor
-
-Provides conversational access to infrastructure intelligence using natural language.
-
-
-# AI Advisor
-
-The AI Advisor enables users to explore infrastructure intelligence using natural language.
-
-Current capabilities
-
-- Site Summaries
-- Infrastructure Analysis
-- Grid Readiness Evaluation
-- Renewable Energy Analysis
-- Executive Recommendations
-- News Summaries
-
-Upcoming
-
-- Intent Detection
-- Tool Routing
-- Context Awareness
-- LangGraph Agents
-- Agentic RAG
-
-
-# Technology Stack
-
-## Backend
-
-- Python
-- SQLAlchemy
-- PostgreSQL
-- PostGIS
-
-## GIS
-
-- GeoPandas
-- Shapely
-- PyDeck
-
-## Dashboard
-
-- Streamlit
-
-## AI
-
-- OpenAI
-- Retrieval-Augmented Generation (RAG)
-
-## Data Processing
-
-- Pandas
-- JSON
-- GeoJSON
-
-nrw-dc-bi/
-│
-├── app/
-│   ├── services/
-│   ├── repositories/
-│   ├── database/
-│   ├── spatial/
-│   ├── intelligence/
-│   └── ai/
-│
-├── ui/
-│
-├── data/
-│
-├── scripts/
-│
-├── tests/
-│
-└── README.md
-
-
-# Installation
-
-## Prerequisites
-
-- Python 3.12+
-- PostgreSQL 17 + PostGIS
-- uv (Python package manager)
-
-Install uv if you don't already have it:
+From the repository root, enter the assignment directory before running commands:
 
 ```bash
-pip install uv
+cd assignments/IRIS-OEK-SN
 ```
 
-or
+All commands below run from that directory.
+
+For an in-depth explanation of the design and code, read
+[PROJECT_WALKTHROUGH.md](assignments/IRIS-OEK-SN/PROJECT_WALKTHROUGH.md).
+
+**Live access limitation:** the assignment's [GetCapabilities endpoint](https://geoportal.sachsen.de/wfs/oekokonto?service=WFS&request=GetCapabilities)
+returned HTTP 404 on 2026-10-27. No live layer, namespace, attributes, permissions,
+CRS, pagination support, or registered sites could be verified. The submitted
+demonstration uses explicitly **synthetic fixtures**, as permitted by the brief.
+The field names in `tests/fixtures/` are test assumptions, not an observed Saxony schema.
+See [evidence](assignments/IRIS-OEK-SN/evidence/endpoint-check.md) and [quality report](assignments/IRIS-OEK-SN/QUALITY_REPORT.md).
+
+**Real-data alternative:** the user-approved LISt KISS/KoKa-Nat public GeoPackage
+now runs through the same normalizer and staging loader. It is labelled
+`compensation_measures`, with its actual endpoint/layer, licence and attribution.
+See [alternative source/mapping](assignments/IRIS-OEK-SN/ALTERNATIVE_SOURCE.md) and
+[requirements audit](assignments/IRIS-OEK-SN/REQUIREMENTS_AUDIT.md).
 
 ```bash
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+# After configuring Docker credentials as below:
+mkdir -p output data
+docker compose run --build --rm harvester run --config config.list.example.json --load
 ```
 
----
+Existing demo databases need the [explicit migration](assignments/IRIS-OEK-SN/ALTERNATIVE_SOURCE.md#existing-database-migration).
 
-## Clone the Repository
+## Run locally (no database needed)
+
+Run commands from `assignments/IRIS-OEK-SN/`, after the `cd` command above.
+Use Python 3.11+ and uv 0.9.5, or the pip alternative below.
 
 ```bash
-git clone <repository-url>
-
-cd nrw-dc-bi
+uv sync --locked --extra test --python 3.11
+uv run --locked iris-oek run --config tests/fixtures/config.json \
+  --fixture tests/fixtures/parcels.geojson
+uv run --locked pytest -q -m 'not integration'
+uv run --locked ruff check .
+uv run --locked ruff format --check .
 ```
 
----
-
-## Create a Virtual Environment
+Without uv:
 
 ```bash
-uv venv
+python3.11 -m venv .venv
+. .venv/bin/activate
+pip install --require-hashes -r requirements.lock
+pip install --no-deps -e .
+iris-oek run --config tests/fixtures/config.json --fixture tests/fixtures/parcels.geojson
+pytest -q -m 'not integration'
 ```
 
-Activate it:
+`requirements.lock` is a hashed export including test dependencies. Pip installs
+the pinned build backend `hatchling==1.27.0` and `editables==0.5` in an isolated build environment.
+`uv.lock` pins the complete runtime/test dependency graph. Docker uses that lock.
 
-### Windows
+Each invocation creates `output/<run UUID>/report.json`. Successful normalization
+also writes `issues.json` and an RFC 7946 WGS84 `sites.geojson`. Fixture inputs are
+copied with a SHA-256; live response bodies, request parameters, HTTP status and
+SHA-256 hashes are archived under `source/`. No credentials belong in configuration
+or reports. Examples are checked into [examples/](assignments/IRIS-OEK-SN/examples/).
+
+## Isolated Docker/PostGIS demonstration
+
+The Compose project creates its own database and volume, publishes no ports and
+uses a restricted loader role. PostgreSQL/PostGIS initialization is performed by a
+separate migration role. No external database or production credentials are needed.
 
 ```bash
-.venv\Scripts\activate
+# Creates ignored local credentials; do not commit .env.
+python3 - <<'PY'
+from pathlib import Path
+import os, secrets
+p = Path('.env')
+p.write_text('POSTGRES_PASSWORD=' + secrets.token_hex(24) + '\n'
+             'HARVESTER_PASSWORD=' + secrets.token_hex(24) + '\n'
+             'LOCAL_UID=' + str(os.getuid()) + '\nLOCAL_GID=' + str(os.getgid()) + '\n')
+p.chmod(0o600)
+PY
+mkdir -p output
+docker compose up -d --wait db
+docker compose build
+docker compose run --rm harvester run --config tests/fixtures/config.json \
+  --fixture tests/fixtures/parcels.geojson --load
+docker compose run --rm harvester run --config tests/fixtures/config.json \
+  --fixture tests/fixtures/parcels.geojson --load
+docker compose exec -T db psql -U iris_migrator -d iris_oek_demo < sql/validate.sql
 ```
 
-### Linux / macOS
+Expected: first run inserts 4 sites; second inserts 0 and leaves 4 unchanged.
+Reports contain 12 received, 4 accepted, 1 repaired (a subset of accepted),
+7 rejected and 1 duplicate on both runs. `--load` is required for database writes.
+Compose's default command validates fixtures without loading.
+
+Run all tests, including real PostGIS transactions, CRS/geometry assertions,
+idempotence, updates, rollback and privilege checks:
 
 ```bash
-source .venv/bin/activate
+docker compose --profile test run --build --rm tests
 ```
 
----
+**Integration tests truncate only this demo database's three staging tables.**
+Do not point test DSNs at a shared database. Outside Compose, tests require
+`TEST_DATABASE_URL` (restricted loader) and `TEST_ADMIN_DATABASE_URL` (isolated
+test database migration role); otherwise integration tests are reported as skipped.
+Stop this project using `docker compose down`; add `-v` only to delete its demo data.
+The loader has no schema-creation or public-table-write permission. `init-db` is an
+optional migration command for a separate isolated database with PostGIS already
+installed; supply a migration DSN through `DATABASE_URL`.
 
-## Install Dependencies
+## Source discovery and mapping
 
 ```bash
-uv sync
+uv run --locked iris-oek discover --config config.example.json
 ```
 
-If you're not using a `uv.lock` yet, then instead use:
+Discovery archives capabilities, XSD and a machine-readable summary. The supplied
+endpoint currently returns 404. Live harvesting requires a reviewed XSD hash,
+verified attribute mappings/units, WFS 2.0 paging/sorting, a unique ID property,
+GeoJSON with an explicit CRS, and numeric before/after hits counts. Missing live
+attributes remain unmapped. HTTP errors, repeated IDs, changed counts, truncation
+and mismatched CRS fail before loading; there is no automatic fixture fallback.
 
-```bash
-uv pip install -r requirements.txt
-```
+| Target | Mapping |
+|---|---|
+| `site_id`, `state_code` | Stable hash of source namespace/layer/ID plus fixture/live scope; `SN` |
+| `municipality`, `cadastre` | Explicit mapped text fields, Unicode NFC and whitespace normalization |
+| status | Reviewed value lookup; unknown values stay NULL with original text retained |
+| `area_m2`, `source_area_m2` | EPSG:25832 geometry area; separately retained source area with verified unit |
+| credits | Explicit source field/unit, otherwise NULL; no estimate from area/status |
+| geometry/provenance | Valid MultiPolygon in EPSG:25832; original CRS/WKT, geometry JSON, properties, source identity and run metadata retained |
 
----
+See [MAPPING.md](assignments/IRIS-OEK-SN/MAPPING.md) for the full attribute table, synthetic field names,
+repair policy, pagination controls and live enablement procedure.
 
-## Configure Environment
+## Assumptions and limitations
 
-```bash
-cp .env.example .env
-```
+Fixtures demonstrate behavior; they cannot prove registered-site membership or
+provider permissions. The coarse Saxony envelope catches gross location errors
+but is not an authoritative state boundary. Only wholly polygonal `make_valid`
+results are accepted; collapsed/mixed repairs are rejected. Null optional values
+stay null, and all repairs/rejections/unknown statuses are reported.
 
-Update the database connection and OpenAI API key.
+The supplied staging DDL is a new explicit contract. Existing incompatible tables
+need a reviewed migration. Upserts and successful audit logs share one transaction;
+SQL failures roll back the complete load and are reported locally. Identical replay
+updates only last-seen metadata. Disappeared/rejected sites are retained for review;
+there are no inferred deletions. SQL targets only `iris_staging`.
 
----
-
-## Run Database Migrations
-
-```bash
-alembic upgrade head
-```
-
----
-
-## Start the Dashboard
-
-```bash
-streamlit run ui/app.py
-```
-
-The application will be available at:
-
-```
-http://localhost:8501
-```
-
-## Requirements
-
-- Python 3.12+
-- PostgreSQL 17
-- PostGIS
-- Git
-- uv
-
-# Running the Dashboard
-
-```bash
-streamlit run ui/app.py
-```
-# Current Project Status
-
-## Completed
-
-- Data Collection
-- ETL Pipelines
-- GIS Dashboard
-- Interactive Map
-- Site Intelligence
-- Site Score
-- News Intelligence
-- AI Advisor
-- Infrastructure Layers
-
-## In Progress
-
-- Context-aware AI
-- Intent Detection
-- Tool Routing
-- LangGraph Integration
-
-## Planned
-
-- Multi-Agent AI
-- Predictive Site Recommendations
-- Investment Forecasting
-- Voice Interface
-
-
-# Roadmap
-
-## Completed
-
-- ETL Platform
-- GIS Visualization
-- Business Intelligence Dashboard
-- AI Advisor
-- News Intelligence
-
-## Next
-
-- Intent Detection
-- Context-aware Responses
-- Agentic RAG
-- LangGraph Workflows
-
-## Future
-
-- Predictive Site Ranking
-- Multi-Agent Decision Support
-- Voice-enabled AI Advisor
-
-
-# Vision
-
-The long-term vision is to build an AI-powered decision support platform for data center planning and infrastructure investment.
-
-By combining geospatial intelligence, power infrastructure, renewable energy, land valuation, market intelligence, and conversational AI, the platform enables users to evaluate and compare potential data center locations through natural language interaction.
-
-The project is designed to evolve into a comprehensive executive decision-support system that assists planners, investors, and infrastructure specialists in identifying optimal data center locations.
+The client deliberately supports WFS 2.0 with JSON and a simple named XSD feature
+type; unsupported versions/formats/schemas fail closed. Offset paging cannot detect
+every same-count concurrent edit, so a quiescent source/snapshot is needed for strict
+consistency. Rights and actual source schema of the original WFS remain unverified;
+the alternative's reviewed public-download licence and schema are documented separately.
+[QUALITY_REPORT.md](assignments/IRIS-OEK-SN/QUALITY_REPORT.md) records the observed outcomes and acceptance
+limits. The provider named in the brief is LfULG Sachsen; synthetic exports are not
+provider data.
