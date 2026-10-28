@@ -19,17 +19,35 @@ CREATE TABLE IF NOT EXISTS iris_staging.compensation_sites (
     source_properties jsonb NOT NULL,
     geom geometry(MultiPolygon,25832) NOT NULL CHECK (ST_IsValid(geom) AND NOT ST_IsEmpty(geom)),
     quality_flags jsonb NOT NULL,
-    source_endpoint text NOT NULL CHECK (source_endpoint = 'https://geoportal.sachsen.de/wfs/oekokonto'),
-    source_layer text NOT NULL CHECK (source_layer = 'sn_oekokonto_flurstuecke'),
+    source_endpoint text NOT NULL,
+    source_layer text NOT NULL,
     source_namespace text NOT NULL,
     is_fixture boolean NOT NULL,
+    source_kind text NOT NULL DEFAULT 'wfs',
+    source_domain text NOT NULL DEFAULT 'compensation_parcels',
+    source_license text,
+    source_attribution text,
     content_hash text NOT NULL,
     first_seen timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now(),
     last_seen timestamptz NOT NULL DEFAULT now(),
     last_run_id uuid NOT NULL,
     PRIMARY KEY (site_id, state_code),
-    UNIQUE (source_namespace, source_layer, source_id, state_code, is_fixture)
+    UNIQUE (source_namespace, source_layer, source_id, state_code, is_fixture),
+    CONSTRAINT compensation_sites_source_profile_check CHECK (
+        (source_kind IN ('wfs','fixture')
+         AND source_endpoint='https://geoportal.sachsen.de/wfs/oekokonto'
+         AND source_layer='sn_oekokonto_flurstuecke'
+         AND source_domain='compensation_parcels'
+         AND (source_kind='fixture')=is_fixture)
+        OR
+        (source_kind='list_geopackage' AND NOT is_fixture
+         AND source_endpoint='https://www.list.smwa.sachsen.de/inspire/download/DE-SN-SBV_INSPIRE_Downloadservice_Kompensationsflaechen.zip'
+         AND source_layer='Kompensationsmassnahmen_Flaechen'
+         AND source_domain='compensation_measures'
+         AND source_license IS NOT NULL AND source_license='https://www.govdata.de/dl-de/by-2-0'
+         AND source_attribution IS NOT NULL AND source_attribution='Quelle: Kompensationsmaßnahmen-Informationssystem Freistaat Sachsen')
+    )
 );
 CREATE INDEX IF NOT EXISTS compensation_sites_geom_idx ON iris_staging.compensation_sites USING gist(geom);
 

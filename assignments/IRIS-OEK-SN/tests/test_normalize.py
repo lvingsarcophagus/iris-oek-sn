@@ -99,3 +99,10 @@ def test_holes_multipart_3d_and_missing_state(config, collection):
     feature["properties"].pop("land")
     with pytest.raises(Reject, match="State"):
         convert(feature, config, collection)
+
+
+def test_open_ring_is_not_silently_closed(config, collection):
+    feature = copy.deepcopy(collection["features"][0])
+    feature["geometry"]["coordinates"][0].pop()
+    with pytest.raises(Reject, match="unclosed"):
+        convert(feature, config, collection)

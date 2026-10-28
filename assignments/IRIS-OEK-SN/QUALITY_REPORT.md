@@ -1,13 +1,24 @@
 # Quality and error report
 
-Assignment: IRIS-OEK-SN / TASK 058. Verification date: 2026-10-27.
+Assignment: IRIS-OEK-SN / TASK 058. Updated: 2026-10-28.
+
+A user-approved real-data alternative now supplements the original fixture WFS
+demonstration. Its complete-source local validation processed 41,452 polygons:
+41,434 accepted (51 repaired), 18 rejected, zero duplicates. Fourteen rejections
+were collapsed/mixed repairs and four failed final projected geometry/area checks.
+PostGIS full-load/replay evidence is recorded separately after CI validation.
+See [alternative provenance/mapping](ALTERNATIVE_SOURCE.md) and
+[the requirement audit](REQUIREMENTS_AUDIT.md).
+
+The results below headed fixture outcomes and the 35-test result describe the
+original submission; they are retained as historical evidence, not the new totals.
 
 ## Source availability and acceptance boundary
 
 The supplied public GetCapabilities URL returned **HTTP 404**, with a portal HTML
 page rather than WFS XML. [Captured headers and response hash](evidence/endpoint-check.md)
-document the observation. No live sites were harvested, and no alternative source
-was substituted. Advertised feature type, source permissions, real attributes and
+document the observation. No sites were harvested from that WFS. The separately approved public GeoPackage
+is labelled as an alternative compensation-measure source. Advertised feature type, source permissions, real attributes and
 registered compensation-site membership remain unverified. The assignment explicitly
 permits a fixture demonstrator when live access is unavailable.
 

@@ -29,14 +29,26 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import secrets
+          import secrets, os
           p = Path('.env')
           p.write_text('POSTGRES_PASSWORD=' + secrets.token_hex(24) + '\n'
-                       'HARVESTER_PASSWORD=' + secrets.token_hex(24) + '\n')
+                       'HARVESTER_PASSWORD=' + secrets.token_hex(24) + '\n'
+                       'LOCAL_UID=' + str(os.getuid()) + '\nLOCAL_GID=' + str(os.getgid()) + '\n')
           p.chmod(0o600)
           PY
       - name: Python and real PostGIS tests
         run: docker compose --ansi never --progress plain --profile test run --build --rm tests
+      - name: Reviewed public Saxony snapshot - full load and replay
+        run: |
+          mkdir -p output data
+          python scripts/verify_real_demo.py
+      - name: Retain public-source quality evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-source-evidence
+          path: assignments/IRIS-OEK-SN/output/real-evidence/
+          if-no-files-found: ignore
       - name: Remove isolated test services
         if: always()
         run: docker compose down -v

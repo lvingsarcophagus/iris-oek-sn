@@ -5,4 +5,8 @@ __pycache__/
 .ruff_cache/
 .env
 output/
+data/
+*.gpkg
+*.zip
+config.local.json
 *.egg-info/

@@ -1,0 +1,13 @@
+{
+  "source_kind": "list_geopackage",
+  "endpoint": "https://www.list.smwa.sachsen.de/inspire/download/DE-SN-SBV_INSPIRE_Downloadservice_Kompensationsflaechen.zip",
+  "layer": "Kompensationsmassnahmen_Flaechen",
+  "id_field": "ID",
+  "fields": {"status": "Massnahme_Stand"},
+  "status_values": {},
+  "page_size": 500,
+  "timeout_seconds": 60,
+  "request_interval_seconds": 1,
+  "max_response_bytes": 67108864,
+  "reviewed_archive_sha256": "54173820d224ec39d8b3082810ddb4884703e4581e1ab38d64000b512a578693"
+}

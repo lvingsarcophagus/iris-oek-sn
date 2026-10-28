@@ -10,6 +10,11 @@ endpoint returned HTTP 404 when checked on 2026-10-27. No real registered sites
 were downloaded. The live client is implemented, but its compatibility with the
 actual provider still requires access and schema review.
 
+**Update 2026-10-28:** a separately labelled real-data adapter now processes the
+public LISt compensation-measure GeoPackage. The original fixture/WFS walkthrough
+below still applies to that path; [ALTERNATIVE_SOURCE.md](ALTERNATIVE_SOURCE.md)
+explains the additional input, actual attributes, distinct domain and licence.
+
 ## 1. The problem the assignment asks us to solve
 
 The source is supposed to publish parcels associated with ecological compensation

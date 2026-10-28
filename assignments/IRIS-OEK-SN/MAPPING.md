@@ -1,5 +1,8 @@
 # Source discovery, attribute mapping and loading
 
+This page describes the original assignment WFS and synthetic fixtures. The
+user-approved real GeoPackage has its own [source contract and mapping](ALTERNATIVE_SOURCE.md).
+
 
 ```bash
 uv run --locked iris-oek discover --config config.example.json
@@ -82,7 +85,8 @@ SQL is explicitly qualified to `iris_staging`; there is no configurable target
 schema, no call to upstream runners, and no write to `iris_core`. The supplied
 [DDL](iris_oek/sql/schema.sql) defines the submission's staging contract. Existing
 incompatible tables require a reviewed staging migration; they are not dropped or
-silently altered. PostGIS must already be installed outside Docker initialization.
+silently altered. The documented staging-only `002_list_source.sql` migration supports
+the previous submission schema explicitly. PostGIS must already be installed outside Docker initialization.
 
 A single transaction and advisory lock cover all site upserts and successful run/
 issue logs. Identical content only updates `last_seen`/`last_run_id`; changed content

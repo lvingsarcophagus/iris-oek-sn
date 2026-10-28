@@ -15,9 +15,24 @@ demonstration uses explicitly **synthetic fixtures**, as permitted by the brief.
 The field names in `tests/fixtures/` are test assumptions, not an observed Saxony schema.
 See [evidence](evidence/endpoint-check.md) and [quality report](QUALITY_REPORT.md).
 
+**Real-data alternative:** the user-approved LISt KISS/KoKa-Nat public GeoPackage
+now runs through the same normalizer and staging loader. It is labelled
+`compensation_measures`, with its actual endpoint/layer, licence and attribution.
+See [alternative source/mapping](ALTERNATIVE_SOURCE.md) and
+[requirements audit](REQUIREMENTS_AUDIT.md).
+
+```bash
+# After configuring Docker credentials as below:
+mkdir -p output data
+docker compose run --build --rm harvester run --config config.list.example.json --load
+```
+
+Existing demo databases need the [explicit migration](ALTERNATIVE_SOURCE.md#existing-database-migration).
+
 ## Run locally (no database needed)
 
-Run every command below from **`assignments/IRIS-OEK-SN/`**.
+Run commands from the directory containing this README
+(`assignments/IRIS-OEK-SN/` in the base repository).
 Use Python 3.11+ and uv 0.9.5, or the pip alternative below.
 
 ```bash
@@ -140,7 +155,8 @@ there are no inferred deletions. SQL targets only `iris_staging`.
 The client deliberately supports WFS 2.0 with JSON and a simple named XSD feature
 type; unsupported versions/formats/schemas fail closed. Offset paging cannot detect
 every same-count concurrent edit, so a quiescent source/snapshot is needed for strict
-consistency. Dataset-specific rights and actual source schema remain unverified.
+consistency. Rights and actual source schema of the original WFS remain unverified;
+the alternative's reviewed public-download licence and schema are documented separately.
 [QUALITY_REPORT.md](QUALITY_REPORT.md) records the observed outcomes and acceptance
 limits. The provider named in the brief is LfULG Sachsen; synthetic exports are not
 provider data.

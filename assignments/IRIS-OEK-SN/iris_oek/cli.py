@@ -13,8 +13,10 @@ from pathlib import Path
 import geopandas as gpd
 
 from iris_oek.config import Config
+from iris_oek.geopackage import GeoPackageSource
 from iris_oek.load import initialize, load
 from iris_oek.normalize import process
+from iris_oek.sources import LIST_NAMESPACE
 from iris_oek.wfs import SourceError, WFS
 
 
@@ -29,6 +31,9 @@ def main(argv=None):
     parser.add_argument("command", choices=["discover", "run", "init-db"])
     parser.add_argument("--config", type=Path, default=Path("config.example.json"))
     parser.add_argument("--fixture", type=Path, help="Explicitly synthetic fixture collection")
+    parser.add_argument(
+        "--archive", type=Path, help="Replay a reviewed LISt ZIP without network access"
+    )
     parser.add_argument("--output", type=Path, default=Path("output"))
     parser.add_argument(
         "--load", action="store_true", help="Commit to the configured staging database"
@@ -48,10 +53,22 @@ def main(argv=None):
     try:
         config = Config.read(args.config)
         report["config"] = asdict(config)  # Config has no credential fields.
+        report["source_domain"] = config.profile.domain
+        report["source_kind"] = "fixture" if args.fixture else config.source_kind
+        if args.fixture and (args.archive or config.source_kind != "wfs"):
+            raise ValueError(
+                "Synthetic fixtures and the real GeoPackage profile must be selected separately"
+            )
+        if args.archive and (config.source_kind != "list_geopackage" or args.command != "run"):
+            raise ValueError("--archive requires run with the LISt GeoPackage configuration")
         if args.command == "init-db":
             initialize(os.environ["DATABASE_URL"])
             report["status"] = "initialized"
         elif args.command == "discover":
+            if config.source_kind != "wfs":
+                raise ValueError(
+                    "discover is reserved for the assignment WFS; use run for the alternative ZIP"
+                )
             client = WFS(config, directory / "source")
             report["discovery"] = asdict(client.discover())
             report["status"] = "discovered"
@@ -72,6 +89,12 @@ def main(argv=None):
                 namespace = collection["source_namespace"]
                 report["input_sha256"] = hashlib.sha256(data).hexdigest()
                 features = collection["features"]
+            elif config.source_kind == "list_geopackage":
+                client = GeoPackageSource(config, directory / "source")
+                report["source"] = client.acquire(args.archive)
+                report["input_sha256"] = report["source"]["archive_sha256"]
+                source_crs, namespace = "EPSG:25833", LIST_NAMESPACE
+                features = client.features()
             else:
                 client = WFS(config, directory / "source")
                 discovery = client.discover()
@@ -98,6 +121,11 @@ def main(argv=None):
                             "source_id": r.source_id,
                             "area_m2": r.area_m2,
                             "is_fixture": r.is_fixture,
+                            "source_kind": r.source_kind,
+                            "source_domain": r.source_domain,
+                            "source_layer": r.source_layer,
+                            "source_license": r.source_license,
+                            "source_attribution": r.source_attribution,
                             "geometry": r.geometry,
                         }
                         for r in records

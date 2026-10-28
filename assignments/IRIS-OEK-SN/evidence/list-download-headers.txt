@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Date: Wed, 28 Oct 2026 17:41:41 GMT
+Server: Microsoft-IIS/10.0
+Content-Type: application/x-zip-compressed
+Last-Modified: Fri, 02 Oct 2026 17:21:32 GMT
+Accept-Ranges: bytes
+ETag: "211a1e789252dd1:0"
+Content-Length: 50044116

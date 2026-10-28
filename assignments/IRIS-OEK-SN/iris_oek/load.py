@@ -19,6 +19,7 @@ def connect(dsn):
 def initialize(dsn):
     with connect(dsn) as connection:
         connection.execute(SCHEMA.read_text())
+        connection.execute(SCHEMA.with_name("002_list_source.sql").read_text())
 
 
 def load(dsn, records, report, issues):

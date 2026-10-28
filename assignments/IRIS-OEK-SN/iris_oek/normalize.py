@@ -6,6 +6,7 @@ import math
 import re
 import unicodedata
 from dataclasses import dataclass
+from functools import lru_cache
 
 import geopandas as gpd
 import numpy as np
@@ -14,8 +15,17 @@ from shapely import get_coordinates, make_valid
 from shapely.geometry import MultiPolygon, shape
 from shapely.validation import explain_validity
 
-from iris_oek import ENDPOINT, LAYER, STATE
+from iris_oek import STATE
 from iris_oek.config import Config
+
+GEOGRAPHIC = CRS.from_epsg(4326)
+PROJECTED = CRS.from_epsg(25832)
+
+
+@lru_cache(maxsize=16)
+def crs_details(name):
+    crs = CRS.from_user_input(name)
+    return crs, crs.to_wkt()
 
 
 class Reject(ValueError):
@@ -67,6 +77,10 @@ class Record:
     source_layer: str
     source_namespace: str
     is_fixture: bool
+    source_kind: str = "wfs"
+    source_domain: str = "compensation_parcels"
+    source_license: str | None = None
+    source_attribution: str | None = None
     content_hash: str = ""
 
     def payload(self):
@@ -93,6 +107,23 @@ def normalize(feature, config: Config, source_crs: str, namespace: str, fixture=
     values = {target: props.get(source) for target, source in config.fields.items()}
     if "state" in values and str(values["state"]) not in config.state_values:
         raise Reject("State attribute is missing or not an explicitly allowed Saxony code")
+    source_geometry = feature.get("geometry")
+    if isinstance(source_geometry, dict) and source_geometry.get("type") in {
+        "Polygon",
+        "MultiPolygon",
+    }:
+        polygons = (
+            [source_geometry.get("coordinates", [])]
+            if source_geometry["type"] == "Polygon"
+            else source_geometry.get("coordinates", [])
+        )
+        try:
+            if any(
+                len(ring) < 4 or ring[0] != ring[-1] for polygon in polygons for ring in polygon
+            ):
+                raise Reject("Source polygon ring is unclosed or too short")
+        except (TypeError, IndexError) as exc:
+            raise Reject("Malformed polygon rings") from exc
     try:
         original = shape(feature.get("geometry"))
     except Exception as exc:
@@ -100,14 +131,16 @@ def normalize(feature, config: Config, source_crs: str, namespace: str, fixture=
     if original.is_empty or original.geom_type not in {"Polygon", "MultiPolygon"}:
         raise Reject("Empty or nonpolygon geometry")
     coordinates = get_coordinates(original, include_z=False)
-    if original.has_z or not np.isfinite(coordinates).all():
+    if original.has_z or original.has_m or not np.isfinite(coordinates).all():
         raise Reject("Only finite 2D source coordinates supported")
-    crs = CRS.from_user_input(source_crs)
+    crs, original_wkt = crs_details(source_crs)
     if crs.is_geographic and any(
         abs(v) > bound for v, bound in zip(original.bounds, [180, 90, 180, 90])
     ):
         raise Reject("Source coordinates outside geographic CRS range")
     flags = []
+    if config.source_kind == "list_geopackage":
+        flags.append("alternative_source_compensation_measures_not_cadastral_parcels")
     working = original
     if not working.is_valid:
         reason = explain_validity(working)
@@ -121,12 +154,12 @@ def normalize(feature, config: Config, source_crs: str, namespace: str, fixture=
         flags.append("geometry_repaired: " + reason)
     try:
         series = gpd.GeoSeries([working], crs=crs)
-        geographic = series.to_crs(4326).iloc[0]
+        geographic = series.to_crs(GEOGRAPHIC).iloc[0]
         # Gross-error screen only; this is not an authoritative administrative boundary.
         xmin, ymin, xmax, ymax = geographic.bounds
         if not (11.8 <= xmin <= xmax <= 15.1 and 50.1 <= ymin <= ymax <= 51.8):
             raise Reject("Geometry outside coarse Saxony plausibility envelope")
-        working = series.to_crs(25832).iloc[0]
+        working = series.to_crs(PROJECTED).iloc[0]
     except Reject:
         raise
     except Exception as exc:
@@ -154,7 +187,7 @@ def normalize(feature, config: Config, source_crs: str, namespace: str, fixture=
         if field not in values or values[field] is None or values[field] == "":
             flags.append("missing_" + field)
     identity = json.dumps(
-        ["fixture" if fixture else "live", namespace, LAYER, identifier],
+        ["fixture" if fixture else "live", namespace, config.layer, identifier],
         ensure_ascii=False,
         separators=(",", ":"),
     )
@@ -172,15 +205,19 @@ def normalize(feature, config: Config, source_crs: str, namespace: str, fixture=
         number(values.get("credits")),
         config.credit_unit if values.get("credits") is not None else None,
         source_crs,
-        crs.to_wkt(),
+        original_wkt,
         feature["geometry"],
         props,
         working,
         flags,
-        ENDPOINT,
-        LAYER,
+        config.endpoint,
+        config.layer,
         namespace,
         fixture,
+        source_kind="fixture" if fixture else config.source_kind,
+        source_domain=config.profile.domain,
+        source_license=config.profile.license_url,
+        source_attribution=config.profile.attribution,
     )
     record.content_hash = hashlib.sha256(
         json.dumps(record.payload(), sort_keys=True, ensure_ascii=False, allow_nan=False).encode()
