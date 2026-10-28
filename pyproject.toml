@@ -1,40 +1,30 @@
+[build-system]
+requires = ["hatchling==1.27.0", "editables==0.5"]
+build-backend = "hatchling.build"
+
 [project]
-name = "nrw-dc-bi"
+name = "iris-oek-sn"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.12"
+description = "Staging-only Saxony compensation parcel WFS demonstrator"
+requires-python = ">=3.11"
 dependencies = [
-    "alembic>=1.18.5",
-    "beautifulsoup4>=4.15.0",
-    "contextily>=1.7.1",
-    "feedparser>=6.0.14",
-    "folium>=0.20.0",
-    "geoalchemy2>=0.20.0",
-    "geopandas>=1.1.4",
-    "loguru>=0.7.3",
-    "lxml>=6.1.1",
-    "markdown>=3.10.3",
-    "matplotlib>=3.11.1",
-    "numpy>=2.5.1",
-    "openai>=2.52.0",
-    "pandas>=3.0.5",
-    "plotly>=6.9.0",
-    "psycopg2-binary>=2.9.12",
-    "psycopg[binary]>=3.3.4",
-    "pydantic>=2.13.4",
-    "pydantic-settings>=2.14.2",
-    "pydeck>=0.9.3",
-    "pyogrio>=0.13.0",
-    "pyproj>=3.7.2",
-    "pyshp>=3.1.6",
-    "python-dotenv>=1.2.2",
-    "reportlab>=5.0.0",
-    "requests>=2.34.2",
-    "shapely>=2.1.2",
-    "sqlalchemy>=2.0.51",
-    "streamlit>=1.60.0",
-    "streamlit-elements>=0.1.0",
-    "streamlit-folium>=0.27.3",
-    "streamlit-option-menu>=0.4.0",
+  "requests==2.32.5", "defusedxml==0.7.1", "geopandas==1.1.1",
+  "shapely==2.1.2", "pyproj==3.7.2", "psycopg[binary]==3.2.12",
 ]
+
+[project.optional-dependencies]
+test = ["pytest==8.4.2", "responses==0.25.8", "ruff==0.14.3", "hatchling==1.27.0", "editables==0.5"]
+
+[project.scripts]
+iris-oek = "iris_oek.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["iris_oek"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["integration: requires an isolated PostGIS database"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100

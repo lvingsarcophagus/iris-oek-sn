@@ -1,50 +1,41 @@
-version: "3.9"
-
+name: iris-oek-sn-wfs
 services:
-
-  postgres:
-
+  db:
     image: postgis/postgis:17-3.5
-
-    container_name: nrw-postgis
-
-    restart: unless-stopped
-
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-
-    ports:
-      - "5433:5432"
-
+      POSTGRES_DB: iris_oek_demo
+      POSTGRES_USER: iris_migrator
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      HARVESTER_PASSWORD: ${HARVESTER_PASSWORD:?Set HARVESTER_PASSWORD in .env}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-
+      - staging_data:/var/lib/postgresql/data
+      - ./sql/init-db.sh:/docker-entrypoint-initdb.d/10-staging.sh:ro
+      - ./iris_oek/sql/schema.sql:/schema.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  pgadmin:
-
-    image: dpage/pgadmin4
-
-    container_name: nrw-pgadmin
-
-    restart: unless-stopped
-
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U iris_migrator -d iris_oek_demo"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  harvester:
+    build: .
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: admin123
-
-    ports:
-      - "5050:80"
-
+      DATABASE_URL: postgresql://iris_harvester:${HARVESTER_PASSWORD:?Set HARVESTER_PASSWORD in .env}@db:5432/iris_oek_demo
     depends_on:
-      - postgres
-
+      db:
+        condition: service_healthy
+    volumes:
+      - ./output:/app/output
+  tests:
+    build: .
+    profiles: ["test"]
+    entrypoint: ["pytest"]
+    command: ["-q", "-p", "no:cacheprovider"]
+    environment:
+      TEST_DATABASE_URL: postgresql://iris_harvester:${HARVESTER_PASSWORD:?Set HARVESTER_PASSWORD in .env}@db:5432/iris_oek_demo
+      TEST_ADMIN_DATABASE_URL: postgresql://iris_migrator:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/iris_oek_demo
+    depends_on:
+      db:
+        condition: service_healthy
 volumes:
-
-  postgres_data:
+  staging_data:

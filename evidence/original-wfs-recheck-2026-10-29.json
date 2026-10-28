@@ -1,0 +1,40 @@
+{
+  "checked_at_utc": "2026-10-28T22:32:04.518810+00:00",
+  "checked_at_local": "2026-10-29T00:32:04.518810+02:00",
+  "url": "https://geoportal.sachsen.de/wfs/oekokonto?service=WFS&request=GetCapabilities&version=2.0.0",
+  "status": 404,
+  "response_bytes": 67958,
+  "response_sha256": "c40b0926a2707ec47f6367de0f9b5a7344ae73d19f9ede06c267cce75bd2749d",
+  "response_type": "HTML portal 404, not WFS capabilities",
+  "headers": [
+    "HTTP/1.1 404 Not Found",
+    "Date: Wed, 28 Oct 2026 22:29:35 GMT",
+    "Server: Apache",
+    "Strict-Transport-Security: max-age=31536000",
+    "Vary: Origin",
+    "Last-Modified: Tue, 13 Oct 2026 10:16:35 GMT",
+    "ETag: \"10976-65db61bfb7f69\"",
+    "Accept-Ranges: bytes",
+    "Content-Length: 67958",
+    "Content-Type: text/html; charset=UTF-8",
+    ""
+  ],
+  "canonical_request_without_version": {
+    "url": "https://geoportal.sachsen.de/wfs/oekokonto?service=WFS&request=GetCapabilities",
+    "status": 404,
+    "response_sha256": "c40b0926a2707ec47f6367de0f9b5a7344ae73d19f9ede06c267cce75bd2749d",
+    "headers": [
+      "HTTP/1.1 404 Not Found",
+      "Date: Wed, 28 Oct 2026 22:36:07 GMT",
+      "Server: Apache",
+      "Strict-Transport-Security: max-age=31536000",
+      "Vary: Origin",
+      "Last-Modified: Tue, 13 Oct 2026 10:16:35 GMT",
+      "ETag: \"10976-65db61bfb7f69\"",
+      "Accept-Ranges: bytes",
+      "Content-Length: 67958",
+      "Content-Type: text/html; charset=UTF-8",
+      ""
+    ]
+  }
+}
